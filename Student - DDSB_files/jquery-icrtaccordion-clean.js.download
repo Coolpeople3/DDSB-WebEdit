@@ -1,0 +1,144 @@
+$(window).load(function () {
+    $.fn.icrt_accordion_clean = function () {
+        var _class = ".icrtAccordion";
+        if ($(_class).length > 0) {
+            $.each($(_class), function (i, e) {
+                var _trs = $(e).find("> tbody > tr");
+                for (var i = 0; i < _trs.length; i += 2) {
+                    _trs.slice(i, i + 2).wrapAll("<div class=\"Accordion\"></div>");
+                }
+            });
+
+            $.each($("div.Accordion > tr > td"), function (i, e) {
+                var _class = i % 2 == 0 ? "AccordionTrigger" : "AccordionContent";
+                var titleBeforeText = "Show ";
+                var titleAfterText = " content";
+
+                if (iCreateObject.lang == "fr") {
+                    titleBeforeText = "Voir le contenu sur ";
+                    titleAfterText = "";
+                }
+
+                var _divContainer = $(e).wrapInner("<div class=\"" + _class + "\" " + (_class == "AccordionTrigger" ? "title=\"" + encodeHTML(titleBeforeText + $(e).text() + titleAfterText) + "\"" : "") + "></div>").parent();
+                $(e).children().unwrap().unwrap();
+            });
+
+            $.each($("div.Accordion").filter(function () {
+                return $(this).index() == 0;
+            }), function (i, e) {
+                $(e).unwrap().unwrap();
+            });
+        }
+    },
+        $.fn.icrt_accordion_run = function () {
+            var scrollTarget = null;
+            var loadFromLink = false;
+            $(".AccordionTrigger").each(function () {
+                if ($(this).find("a").length == 0) {
+                    var text = $.trim($(this).text()).replace(/\s/g, "-").replace(/[^a-z0-9A-Z-]/g, '');
+                    var anchor = $("<a href='#'></a>").attr("name", text);
+                    $(this).wrapInner(anchor);
+                }
+                if ($(this).is(".AccordionContent .AccordionContent .AccordionTrigger")) {
+                    //Break the chain
+                } else if ($(this).is(".AccordionContent .AccordionTrigger")) {
+                    $(this).wrapInner("<h3></h3>");
+                } else if ($(this).is(".AccordionTrigger")) {
+                    $(this).wrapInner("<h2></h2>");
+                }
+            });
+
+            $(".AccordionTrigger").click(function (e) {
+                var _this = $(this);
+                var _contentSlider = _this.next().find('div[class*="ic-slider"]');
+                if (!_this.hasClass("open")) {
+                    $.each(_this.parent().siblings().children(".AccordionTrigger.open"), function (i, e) {
+                        $(this).removeClass("open").next().slideToggle("100");
+                    });
+                }
+                _this.next().slideToggle("100", function () {
+                    if (_contentSlider.length > 0) {
+                        _contentSlider.iosSlider('update');
+                    }
+                    _this.toggleClass("open");
+                });
+
+                //animate scroll to top of accordion.
+                var self = scrollTarget == null ? this : scrollTarget;
+                setTimeout(function () {
+                    //theOffset = $(self).offset();
+                    //var headerOffset = $("header").css("position") == "fixed" ? $("header").height() : 0;
+                    //var stickyHeaderOffset = $("#stickyHeader").height();
+                    target = $(self);
+                    headerHeight = $("header").height() - 48; // Get fixed header height
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - headerHeight // Offset scroll position of anchor link for sticky header
+                    }, 1000);
+                    scrollTarget = null;
+                }, 500);
+
+                if ($(this).find('a').attr('name')) {
+                    history.replaceState(undefined, undefined, '#' + $(this).find('a').attr('name'))
+                    return false;
+                }
+
+            }).find("a").click(function (e) {
+                e.preventDefault();
+            });
+
+            $(".AccordionTrigger a").mousedown(function (e) {
+                e.preventDefault();
+            }).focus(function (e) {
+                e.preventDefault();
+                if (!$(this).parents(".AccordionTrigger").hasClass("open") && loadFromLink == false) {
+                    $(this).parent().trigger("click");
+                }
+            });
+
+            if (window.location.hash != undefined && window.location.hash != '') {
+                var anchor = $("a[name='" + (window.location.hash.replace("#", "")) + "']");
+                loadFromLink = true;
+                triggerFocusOnParent(anchor);
+
+                // $(anchor).trigger("focus");
+            }
+
+            $("a[href^='#']").each(function () {
+                var target = $(".AccordionTrigger a[name='" + $(this).attr("href").replace(/#/g, '') + "']");
+                if (target && target.length > 0) {
+                    $(this).on("click", function () {
+                        scrollTarget = target;
+                        triggerFocusOnParent(target);
+                        $(target).parent(".AccordionTrigger").not(".open").trigger("click");
+                        $(target).trigger("focus");
+                    });
+                }
+            });
+            $('.AccordionTrigger').append("<span class='closeButton'></span>");
+        }
+
+    function triggerFocusOnParent(targetAnchor) {
+        var anchor = $(targetAnchor).parents(".AccordionContent").prev(".AccordionTrigger").not(".open");
+        if ($(anchor).length > 0) {
+            $(anchor).each(function (index, item) {
+                $(item).trigger("click");
+            });
+        } else {
+            anchor = $(targetAnchor).parents(".AccordionTrigger").not(".open");
+            if ($(anchor).length > 0) {
+                $(anchor).each(function (index, item) {
+                    $(item).trigger("click");
+                });
+            }
+        }
+    }
+
+    function encodeHTML(value) {
+        //Workaround to have HTML entities encoded.
+        return value.replace(/&amp;/g, "&").replace(/'/g, "&apos;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    }
+
+    $.fn.icrt_accordion_clean();
+    $.fn.icrt_accordion_run();
+});

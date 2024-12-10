@@ -1,0 +1,239 @@
+﻿
+if (iCreateObject.isSiteInICreateMode) {
+
+    var toggleHtmlStructure = "<div class=\"toggleContent cf\">";
+    if ($("#subNavContainer").length > 0) {
+        toggleHtmlStructure += "<label for=\"chkHideLeftContent\" class=\"ic-checkbox-inline\">";
+        toggleHtmlStructure += "<input id=\"chkHideLeftContent\" type=\"checkbox\" name=\"chkHideLeftContent\" />Hide Right Content</label>";
+    }
+    if ($("#intBanner").length > 0) {
+        toggleHtmlStructure += "<label for=\"chkHideBannerImage\" class=\"ic-checkbox-inline\">";
+        toggleHtmlStructure += "<input id=\"chkHideBannerImage\" type=\"checkbox\" name=\"chkHideBannerImage\" />Hide Banner Image</label>";
+    }
+    if ($("#intFloatRight").length > 0 && $("#intQuicklinks, #RightImage, #contactMainContainer, #intFloatRight #pageSubscription").length >= 2) {
+        toggleHtmlStructure += "<label for=\"chkHideRightContent\" class=\"ic-checkbox-inline\">";
+        toggleHtmlStructure += "<input id=\"chkHideRightContent\" type=\"checkbox\" name=\"chkHideRightContent\" />Hide Right Content</label>";
+    }
+    if ($("#intQuicklinks").length > 0) {
+        toggleHtmlStructure += "<label for=\"chkHideQuickLinks\" class=\"ic-checkbox-inline\">";
+        toggleHtmlStructure += "<input id=\"chkHideQuickLinks\" type=\"checkbox\" name=\"chkHideQuickLinks\" />Hide Quick Links</label>";
+    }
+    if ($("#RightImage").length > 0) {
+        toggleHtmlStructure += "<label for=\"chkHideRightImage\" class=\"ic-checkbox-inline\">";
+        toggleHtmlStructure += "<input id=\"chkHideRightImage\" type=\"checkbox\" name=\"chkHideRightImage\" />Hide Right Image</label>";
+    }
+    if ($("#contactMainContainer").length > 0) {
+        toggleHtmlStructure += "<label for=\"chkHideRightContact\" class=\"ic-checkbox-inline\">";
+        toggleHtmlStructure += "<input id=\"chkHideRightContact\" type=\"checkbox\" name=\"chkHideRightContact\" />Hide Contact</label>";
+    }
+
+    if ($("#subNavContainer").length > 0) {
+        toggleHtmlStructure += "<label for=\"chkHideSubNav\" class=\"ic-checkbox-inline\">";
+        toggleHtmlStructure += "<input id=\"chkHideSubNav\" type=\"checkbox\" name=\"chkHideLeftContent\" />Hide Sub Nav</label>";
+    }
+    toggleHtmlStructure += "<label for=\"chkHideEmergencyAlert\" class=\"ic-checkbox-inline\">";
+    toggleHtmlStructure += "<input id=\"chkHideEmergencyAlert\" type=\"checkbox\" name=\"chkHideEmergencyAlert\" />Hide Emergency Alert</label>";
+
+    toggleHtmlStructure += "</div>";
+
+    if ($("#intFloatRight").length > 0)
+        $("#intFloatRight").before(toggleHtmlStructure);
+    else if ($(".interior").length > 0)
+        $("#printArea").before(toggleHtmlStructure);
+    else 
+        $("#uberMain").before(toggleHtmlStructure);
+}
+
+if ($("#TKInteriorHideAreasToggle #frmToggleContent").length <= 0) {
+    var myForm = $("<form>");
+    myForm.attr({ "id": "frmToggleContent", "action": "#" });
+    if ($("#subNavContainer").length > 0) {
+        myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideLeftContent", "value": $("#uber").hasClass("wide") ? "wide" : "" }))
+    }
+    if ($("#intFloatRight").length > 0 && $("#intQuicklinks, #RightImage, #contactMainContainer, #intFloatRight #pageSubscription").length >= 2) {
+        myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideRightContent", "value": $("#intFloatRight").hasClass("hide") ? "hide" : "" }))
+    }
+    if ($("#intBanner").length > 0) {
+        myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideBannerImage", "value": $("#intBanner").hasClass("hide") ? "hide" : "" }))
+    }
+    if ($("#RightImage").length > 0) {
+        myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideRightImage", "value": $("#RightImage").hasClass("hide") ? "hide" : "" }))
+    }
+    if ($("#contactMainContainer").length > 0) {
+        myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideRightContact", "value": $("#contactMainContainer").hasClass("hide") ? "hide" : "" }))
+    }
+    if ($("#intQuicklinks").length > 0) {
+        myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideQuickLinks", "value": $("#intQuicklinks").hasClass("hide") ? "hide" : "" }))
+    }
+    if ($("#subNavContainer").length > 0) {
+        myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideSubNav", "value": $("#subNavContainer").hasClass("hide") ? "hide" : "" }))
+    }
+
+    myForm.append($("<input>").attr({ "type": "hidden", "id": "hdnHideEmergencyAlert", "value": "" }))
+    myForm.append($("<input>").attr({ "type": "submit", "id": "btnToggleContent", "name": "btnToggleContent", "aria-label" : "Toggle Content" }).addClass("hideButton"))
+
+    $("#TKInteriorHideAreasToggle").empty().append(myForm);
+} else {
+    //Insert emergency alert banner if not already there
+    if ($("#TKInteriorHideAreasToggle #frmToggleContent #hdnHideEmergencyAlert").length <= 0) {
+        $("#TKInteriorHideAreasToggle #frmToggleContent").prepend($("<input>").attr({ "type": "hidden", "id": "hdnHideEmergencyAlert", "value": "" }))
+    }
+}
+
+if (($("#hdnHideEmergencyAlert").length > 0) && ($("#hdnHideEmergencyAlert").val() == "hide")) {
+    if ($("#chkHideEmergencyAlert").length > 0) {
+        $("#chkHideEmergencyAlert").attr("checked", "checked");
+    }
+}
+// bind checkbox with hidden fields
+if ($("#subNavContainer").length > 0 && ($("#hdnHideLeftContent").length > 0) && ($("#hdnHideLeftContent").val() == "wide")) {
+    if ($("#chkHideLeftContent").length > 0) {
+        $("#chkHideLeftContent").attr("checked", "checked");
+    }
+    $("#uber").toggleClass("wide", true);
+    $("#subNavContainer").toggleClass("wide", true);
+}
+else if ($("#subNavContainer").length > 0 && ($("#hdnHideLeftContent").length > 0) && ($("#hdnHideLeftContent").val() == "")) {
+    $("#uber").toggleClass("wide", false);
+    $("#subNavContainer").toggleClass("wide", false);
+}
+//Right content
+if ($("#intFloatRight").length > 0 && ($("#hdnHideRightContent").length > 0) && ($("#hdnHideRightContent").val() == "hide")) {
+    if ($("#chkHideRightContent").length > 0) {
+        $("#chkHideRightContent").attr("checked", "checked");
+    }
+    $("#intFloatRight").toggleClass("hide", true);
+    $("#uber").toggleClass("hideRight", true);
+}
+else if ($("#intFloatRight").length > 0 && ($("#hdnHideRightContent").length > 0) && ($("#hdnHideRightContent").val() == "")) {
+    $("#intFloatRight").toggleClass("hide", false);
+    $("#uber").toggleClass("hideRight", false);
+}
+//Interior banner
+if ($("#intBanner").length > 0 && ($("#hdnHideBannerImage").length > 0) && ($("#hdnHideBannerImage").val() == "hide")) {
+    if ($("#chkHideBannerImage").length > 0) {
+        $("#chkHideBannerImage").attr("checked", "checked");
+    }
+    $("#intBanner").toggleClass("hide", true);
+}
+else if ($("#intBanner").length > 0 && ($("#hdnHideBannerImage").length > 0) && ($("#hdnHideBannerImage").val() == "")) {
+    $("#intBanner").toggleClass("hide", false);
+}
+//Right image
+if (($("#hdnHideRightImage").length > 0) && ($("#hdnHideRightImage").val() == "hide")) {
+    if ($("#chkHideRightImage").length > 0) {
+        $("#chkHideRightImage").attr("checked", "checked");
+    }
+    $("#RightImage").toggleClass("hide", true);
+}
+else if (($("#hdnHideRightImage").length > 0) && ($("#hdnHideRightImage").val() == "")) {
+    $("#RightImage").toggleClass("hide", false);
+}
+
+//Right contact
+if (($("#hdnHideRightContact").length > 0) && ($("#hdnHideRightContact").val() == "hide")) {
+    if ($("#chkHideRightContact").length > 0) {
+        $("#chkHideRightContact").attr("checked", "checked");
+    }
+    $("#contactMainContainer").toggleClass("hide", true);
+}
+else if (($("#hdnHideRightContact").length > 0) && ($("#hdnHideRightContact").val() == "")) {
+    $("#contactMainContainer").toggleClass("hide", false);
+}
+
+//Quick links
+if (($("#hdnHideQuickLinks").length > 0) && ($("#hdnHideQuickLinks").val() == "hide")) {
+    if ($("#chkHideQuickLinks").length > 0) {
+        $("#chkHideQuickLinks").attr("checked", "checked");
+    }
+    $("#intQuicklinks").toggleClass("hide", true);
+}
+else if (($("#hdnHideQuickLinks").length > 0) && ($("#hdnHideQuickLinks").val() == "")) {
+    $("#intQuicklinks").toggleClass("hide", false);
+}
+
+if ($("#subNavContainer").length > 0 && ($("#hdnHideSubNav").length > 0) && ($("#hdnHideSubNav").val() == "hide")) {
+    if ($("#chkHideSubNav").length > 0) {
+        $("#chkHideSubNav").attr("checked", "checked");
+    }
+    $("#subNavContainer").toggleClass("hide", true);
+}
+else if ($("#subNavContainer").length > 0 && ($("#hdnHideSubNav").length > 0) && ($("#hdnHideSubNav").val() == "")) {
+    $("#subNavContainer").toggleClass("hide", false);
+}
+
+// bind checkbox change event
+
+if ($("#chkHideEmergencyAlert").length > 0) {
+    $("#chkHideEmergencyAlert").change(function () {
+        $("#hdnHideEmergencyAlert").val($("#chkHideEmergencyAlert:checked").length > 0 ? "hide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+    });
+}
+
+if ($("#subNavContainer").length > 0 && $("#chkHideLeftContent").length > 0) {
+    $("#chkHideLeftContent").change(function () {
+        $("#uber").toggleClass("wide", $(this).is(":checked"));
+        $("#subNavContainer").toggleClass("wide", $(this).is(":checked"));
+        $("#hdnHideLeftContent").val($("#subNavContainer").hasClass("wide") ? "wide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+    });
+}
+
+if ($("#intFloatRight").length > 0 && $("#chkHideRightContent").length > 0) {
+    $("#chkHideRightContent").change(function () {
+        $("#intFloatRight").toggleClass("hide", $(this).is(":checked"));
+        $("#hdnHideRightContent").val($("#intFloatRight").hasClass("hide") ? "hide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+    });
+}
+if ($("#intBanner").length > 0 && $("#chkHideBannerImage").length > 0) {
+    $("#chkHideBannerImage").change(function () {
+        $("#intBanner").toggleClass("hide", $(this).is(":checked"));
+        $("#hdnHideBannerImage").val($("#intBanner").hasClass("hide") ? "hide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+    });
+}
+if ($("#chkHideRightImage").length > 0) {
+    $("#chkHideRightImage").change(function () {
+        $("#RightImage").toggleClass("hide", $(this).is(":checked"));
+        $("#hdnHideRightImage").val($("#RightImage").hasClass("hide") ? "hide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+    });
+}
+
+if ($("#chkHideRightContact").length > 0) {
+    $("#chkHideRightContact").change(function () {
+        $("#contactMainContainer").toggleClass("hide", $(this).is(":checked"));
+        $("#hdnHideRightContact").val($("#contactMainContainer").hasClass("hide") ? "hide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+
+        checkFloatRight();
+    });
+}
+
+if ($("#chkHideQuickLinks").length > 0) {
+    $("#chkHideQuickLinks").change(function () {
+        $("#intQuicklinks").toggleClass("hide", $(this).is(":checked"));
+        $("#hdnHideQuickLinks").val($("#intQuicklinks").hasClass("hide") ? "hide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+        checkFloatRight();
+    });
+}
+
+if ($("#subNavContainer").length > 0 && $("#chkHideSubNav").length > 0) {
+    $("#chkHideSubNav").change(function () {
+        $("#subNavContainer").toggleClass("hide", $(this).is(":checked"));
+        $("#hdnHideSubNav").val($("#subNavContainer").hasClass("hide") ? "hide" : "");
+        if (iCreateObject.isSiteInICreateMode) $("#TKInteriorHideAreasToggle").save();
+    });
+}
+
+
+function checkFloatRight() {
+    if ($("#chkHideRightContact").is(":checked") && $("#chkHideQuickLinks").is(":checked")) {
+        $("#intFloatRight").hide();
+    }else{
+        $("#intFloatRight").show();
+    }
+}

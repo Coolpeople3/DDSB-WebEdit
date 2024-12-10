@@ -1,0 +1,851 @@
+/*======================================================
+    responsiveScripts.js
+===================================================== */
+
+function jsMediaQueries() {
+    
+    if (Modernizr.mq('only screen and (min-width: 992px)')) {
+        $('html').removeClass('tablet').addClass('desktop');
+    }
+
+    if (Modernizr.mq('only screen and (max-width: 991px)') && (Modernizr.touch) || Modernizr.mq('only all and (max-width: 991px)')) {
+        $('html').removeClass('desktop mobile').addClass('tablet');
+        $('html').removeClass('mobile');
+    }
+
+    if (Modernizr.mq('only screen and (max-width: 767px)')) {
+        $('html').removeClass('tablet').addClass('mobile');
+        document.addEventListener("touchstart", function() {}, true) // ADD 'ACTIVE' STATE TO TOUCH LINKS
+    }
+
+}
+
+function mainNavMobile() {
+    // ADD EXPANDER FOR MAIN NAV
+    var mobileNavButton = '<div class="mainNavItem_expander" tabindex="0" role="button"></div>';
+    $(mobileNavButton).insertBefore('#mainNav > ul > li > .dropDownContainer')
+    $('.mainNavItem_expander').on('click', function(event) {
+        event.preventDefault()
+        event.stopPropagation()
+
+        if ($(this).parent().hasClass('mobile-open')) {
+            $(this).parent().removeClass("mobile-open");
+            $(this).next().slideToggle(240);
+        } else {
+            $('.mainNavItem_expander').parent().removeClass("mobile-open");
+
+            $(this).parent().toggleClass('mobile-open');
+            $(this).next().slideToggle(240);
+            $('.mainNavItem_expander').parent().each(function(index) {
+                if (!$(this).hasClass('mobile-open')) {
+                    $(this).find('.dropDownContainer').slideUp(240);
+                }
+            });
+        }
+    })
+}
+
+$(function() {
+
+    // Set Uber classes to target iCreate modes
+    
+    // public mode
+    if (!iCreateObject.isSiteInICreateMode && !iCreateObject.isSiteInPreviewMode){ 
+        $('#uber').addClass('public-mode');
+    }
+
+    // public mode or preview mode
+    if (!iCreateObject.isSiteInICreateMode || iCreateObject.isSiteInPreviewMode){ 
+        $('#uber').addClass('public-preview-mode');
+    }
+
+    // public mode or edit mode
+    if (!iCreateObject.isSiteInICreateMode || !iCreateObject.isSiteInPreviewMode){ 
+        $('#uber').addClass('public-edit-mode');
+    }
+
+    // preview mode
+    if (iCreateObject.isSiteInPreviewMode){ 
+        $('#uber').addClass('preview-mode');
+    }
+
+    // preview mode or edit mode
+    if (iCreateObject.isSiteInICreateMode) { 
+        $('#uber').addClass('preview-edit-mode');
+    }
+
+    // edit mode
+    if (iCreateObject.isSiteInICreateMode && !iCreateObject.isSiteInPreviewMode){ 
+        $('#uber').addClass('edit-mode');
+    }
+
+    mainNavMobile();
+
+    // Fix Gallery not visible in Accordion on expand
+    $('.AccordionTrigger').on('click', function() {
+        if (typeof(Event) === 'function') {
+            // modern browsers
+            window.dispatchEvent(new Event('resize'));
+        } else {
+            //This will be executed on old browsers and especially IE
+            var resizeEvent = window.document.createEvent('UIEvents');
+            resizeEvent.initUIEvent('resize', true, false, window, 0);
+            window.dispatchEvent(resizeEvent);
+        }
+    });
+
+    // Mobile nav open/close
+    $('.mobileNav').find('.menuTrigger').on('click', function(event) {
+        event.preventDefault();
+        $('#mainNav').slideToggle('fast');
+    });
+
+    jsMediaQueries();
+
+    if ($('#uber').hasClass('interior')) {
+        $('.lb-imageBox_header').matchHeight();
+    }
+
+    // if ($('#uber').hasClass('homepage')) {
+    //     $(".socialGrid-item").matchHeight();
+    // }
+
+
+    // if ($("#uber").hasClass("homepage")) {
+    //   $('.socialRow').matchHeight();
+    // }
+
+    // if ($("#uber").hasClass("homepage")) {
+    //       $('.socialGrid-item .socialGrid-contentWrapper').matchHeight({byRow: false});
+    // }
+
+	// //set max-height on .twitter-timeline 
+	// if ($("#uber").hasClass("homepage")) {
+	// 	$('#twitterTimelineContainer .twitter-timeline')
+	// 		.matchHeight({
+	// 			target: $('#facebookContainer'),
+	// 			property: 'max-height'
+	// 		});
+  	// }
+
+    $(window).resize(function() {
+        jsMediaQueries();
+
+		//set max-height on .twitter-timeline 
+		// if ($("#uber").hasClass("homepage")) {
+		// 	$('#twitterTimelineContainer .twitter-timeline')
+		// 		.matchHeight({
+		// 			target: $('#facebookContainer'),
+		// 			property: 'max-height'
+		// 		});
+		// }
+	});
+
+    $(window).load(function() {
+        $('body').addClass('loaded');
+        jsMediaQueries();
+
+        if ($('body.loaded').length) {
+            if ($('#subNavContainer').hasClass('hide')) {
+                $('#contactMainContainer').css('margin-top', 0);
+            } else {
+                $("#contactMainContainer").css("margin-top", '50px');
+            }
+        }
+
+		// if ($("#uber").hasClass("homepage")) {
+		// 	$('#twitterTimelineContainer .twitter-timeline')
+		// 		.matchHeight({
+		// 			target: $('#facebookContainer'),
+		// 			property: 'max-height'
+		// 		});
+		//   }
+
+    });
+
+
+    /*==========================================================
+        STICKY NAV
+    ==========================================================*/
+
+    // Don't allow sticky header to be tabbed initially while it's loading / hidden
+    $("#stickyHeader #returnHome a").attr("tabindex", -1);
+
+
+    /*==========================================================
+        MOBILE NAV TRIGGER
+    ==========================================================*/
+
+    // Mobile nav open/close
+    $("#mobileTrigger").click(function (event) {
+        event.preventDefault();
+        $(this).toggleClass("is-active");
+        $("#mainNav").slideToggle("fast");
+    });
+
+    /*==========================================================
+        INTERIOR SUB NAV
+    ==========================================================*/
+
+    // Hide Mobile subNav trigger if subnav is empty
+    if (!$('#subNavWrapper #subNavContainer .subNav li').first().children().length) {
+        $('.subNavTriggerContainer').addClass('hide');
+    } else {
+        $('.subNavTriggerContainer').removeClass('hide');
+    }
+
+    // Mobile subNav open/close
+    $('.subNavTrigger').on('click', function (event) {
+        event.preventDefault();
+        $(this).toggleClass("is-active");
+        $('#subNavWrapper').slideToggle();
+        if ($(this).hasClass("is-active")) {
+            $(".triggerLabel").text("Close");
+        } else {
+            $(".triggerLabel").text("More");
+        }
+    });
+
+    $(window).load(function () {
+        if ($('#subNavContainer ul.top').length <= 0) {
+            //$('ul#extendedMenu').toggleClass('hidden');
+            //$('.showAllWrapper .extendedMenu').hide();
+        }
+    });
+
+    $('#subNavWrapper .showAllWrapper').find('a.extendedMenu').on('click', function (event) {
+
+        event.preventDefault()
+
+        $('#subNavContainer ul#extendedMenu').slideToggle('fast');
+
+        if ($("#subNavContainer a.extendedMenu:contains('Close')").length > 0) {
+            $('#subNavContainer a.extendedMenu').text(function (index, text) {
+                $(this).removeClass("opened").addClass("closed");
+                return text.replace('Close', 'View');
+            });
+        } else {
+            $('#subNavContainer a.extendedMenu').text(function (index, text) {
+                $(this).removeClass("closed").addClass("opened");
+                return text.replace('View', 'Close');
+            });
+        }
+
+    });
+
+    $('.subNav').find('div[role="button"]').keypress(function () {
+        if (event.which == 13) {
+            $(this).next('ul').slideToggle().parent('li').toggleClass('open');
+        }
+    });
+
+    // Expanding sub nav
+    $('.subNav').find('div[role="button"]').click(function (e) {
+        e.stopPropagation();
+        $(this).next('ul').slideToggle().parent('li').toggleClass('open');
+    });
+
+    if ($("#subNavContainer .subNav").children().length > 0) {
+        $("#subNavContainer").removeClass('empty');
+    } else {
+        $('#subNavContainer').addClass('empty');
+    }
+
+
+    /*==========================================================
+        DETACH SCRIPTS
+    ==========================================================*/
+
+    var isMobile = false;
+    function moveElements() {
+        if (Modernizr.mq("only screen and (max-width: 991px)")) {
+            if (!isMobile) {
+                // Mobile
+                if ($("#mainNav").is("*")){ $("#nav").superfish("destroy"); } // superfish
+                if ($("#stickyHeaderRight #mainNav").is("*")){ $("#stickyHeaderRight #mainNav").detach().appendTo("#headerBottom"); } // sticky header
+                if ($("#topNav").is("*")){ $("#topNav").detach().appendTo("#mainNav"); } // topNav links
+                if ($("#searchPopup").is("*")){
+                    // search
+                    $("#searchPopup .searchContainer").detach().prependTo("#mainNav");
+                    $("#searchPopup a.close").click();
+                }
+                if ($(".socialLinks").is("*")) { $(".socialLinks").detach().appendTo("#mainNav"); } // fixed social icons
+                if ($("#likeToBtn").is("*")) { $("#likeToBtn").detach().insertBefore(".socialLinks"); } // I want to 
+                // if ($("#subNavWrapper").is("*")) { $("#subNavWrapper").detach().prependTo("#mainContent"); } // sub nav
+                if ($(".topContent").is("*")) { $(".topContent").detach().prependTo("#main"); } // topContent
+                if ($("#toolbar").is("*")) { $("#toolbar").detach().appendTo(".topContent"); } // actions + crumbs
+                if ($("#subNavWrapper").is("*")) { $("#subNavWrapper").detach().insertBefore("#contentInt"); } // interior subNav
+
+                if ($(".quickLinks").is("*")) { $(".quickLinksTitle").detach().prependTo(".quickLinksMobile"); } // homepage quicklinks
+                if ($(".quickLinks").is("*")) { $(".quickLinks .dropdown").detach().appendTo(".quickLinksMobile"); } // homepage quicklinks
+
+                if ($(".bannerRight").is("*")) { $(".bannerRight").detach().prependTo("#mainContent"); } //homepage section under banner image for mobile
+            }
+            isMobile = true;
+        } else {
+            if (isMobile) {
+                // Desktop
+                $("#nav > li").removeClass("mobile-open"); // superfish
+                if ($("#mainNav").is("*")){ $("#nav").superfish({ cssArrows: false, speed: "normal", speedOut: "fast" }); } // superfish
+                if ($("#topNav").is("*")){ $("#topNav").detach().prependTo("#topNavContainer"); } // topNav links
+                if ($("#mainNav .searchContainer").is("*")){ $("#mainNav .searchContainer").detach().appendTo("#searchPopup .modal-body"); } // search
+                if ($(".socialLinks").is("*")) { $(".socialLinks").detach().insertAfter("#stickyHeader"); } // fixed social icons
+                if ($("#likeToBtn").is("*")) { $("#likeToBtn").detach().insertAfter("#searchIconContainer"); } // I want to 
+                // if ($("#subNavWrapper").is("*")) { $("#subNavWrapper").detach().insertBefore("#contentInt"); } // sub nav
+                if ($(".topContent").is("*")) { $(".topContent").detach().insertBefore("#printAreaContent"); } // topContent
+                if ($("#toolbar").is("*")) { $("#toolbar").detach().appendTo(".topContentWrapper .ic-container-fluid"); } // actions + crumbs
+                if ($("#subNavWrapper").is("*")) { $("#subNavWrapper").detach().insertAfter("#contentInt"); } // interior subNav
+
+                if ($(".quickLinks").is("*")) { $(".quickLinksTitle").detach().insertAfter(".toggle"); } // homepage quicklinks
+                if ($(".quickLinksMobile").is("*")) { $(".quickLinksMobile .dropdown").detach().insertAfter(".quickLinksInner-wrapper"); } // homepage quicklinks
+
+                if ($(".bannerRight").is("*")) { $(".bannerRight").detach().appendTo("#bannerWrapper"); } //homepage section under banner image for mobile
+            }
+            isMobile = false;
+        }
+    }
+
+    $(window).resize(function () {
+        moveElements();
+    });
+
+    $(window).load(function () {
+        moveElements();
+
+        // Initialize superfish
+        if ($("#mainNav").is("*")){
+            if (Modernizr.mq("only screen and (max-width: 991px)")) {
+                $("#nav").superfish("destroy");
+            } else {
+                $("#nav > li").removeClass("mobile-open");
+                $("#nav").superfish({
+                    cssArrows: false,
+                    speed: "normal",
+                    speedOut: "fast",
+                });
+            }
+        }
+    });
+
+
+    /*==========================================================
+        ADD MOBILE DEVICE CLASSES
+    ==========================================================*/
+
+    if (navigator.userAgent.match(/(iPod|iPhone|iPad)/i)) {
+        $('html').addClass('x-apple');
+    }
+    if (navigator.userAgent.match(/(Android)/i)) {
+        $('html').addClass('x-android');
+    }
+    if (navigator.userAgent.match(/(blackberry)/i)) {
+        $('html').addClass('x-blackberry');
+    }
+    if (navigator.userAgent.match(/(bb10)/i)) {
+        $('html').addClass('x-bb10');
+    }
+
+
+    /*==========================================================
+        SCROLL FUNCTIONS
+    ==========================================================*/
+
+    // Sticky Main Nav
+    $(window).scroll(function() {
+
+        if (jQuery(this).scrollTop() > ($('header').outerHeight())){
+            jQuery('#uber').addClass('scrolled');
+        } else {
+            jQuery('#uber').removeClass('scrolled');
+        }
+
+        if (Modernizr.mq('only screen and (min-width: 992px)')){
+            if (jQuery(this).scrollTop() > ($('header').outerHeight())){
+                $('#mainNav').detach().prependTo('#stickyHeaderRight');
+                $("#stickyHeader #returnHome a").attr("tabindex", 0);
+            } else {
+                $('#mainNav').detach().prependTo('#headerBottomRight');
+                $("#stickyHeader #returnHome a").attr("tabindex", -1);
+            }
+        }
+
+    });
+
+    // Scroll to Anchor links when link to anchor is clicked on the same page
+    $('#skipContentLink, #printAreaContent a[href*=#]:not([href=#]), #printAreaContentDotNet a[href*=#]:not([href=#]), #skipContentLink').click(function() {
+        if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+            var target = $(this.hash);
+            var headerHeight = 120;
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top - headerHeight // Offset scroll position of anchor link for sticky header
+                }, 1000);
+                target.focus()
+                return false;
+            }
+        }
+    });
+
+    $(window).load(function() {
+
+        // Ignore if page is using ScrollTo functionality from URL (facility module)
+        // OR - if emergency carousel exists
+        var pageURL = window.location.href;
+        if (pageURL.indexOf("ScrollTo=") == -1 && !$("#emergencyCarousel").is("*")){
+
+            // Scroll to Anchor links on page load when anchor hash is part of URL
+            if (window.location.hash && window.location.hash != '') {
+                var hash = window.location.hash.substring(1),
+                    hashIsEl = true;
+                if ($('[name=' + hash + ']').length > 0) {
+                    hash = $('[name=' + hash + ']');
+                } else if ($('#' + hash).length > 0) {
+                    hash = $('#' + hash);
+                } else {
+                    hashIsEl = false;
+                }
+                if (hashIsEl) {
+                    headerHeight = $("header").height() + 5; // Get fixed header height
+                    var offsetTop = hash.offset().top - headerHeight;
+                    $('html, body').animate({
+                        scrollTop: offsetTop
+                    }, 1000);
+                }
+            } else {
+                // Scroll to #pageHeading and by pass interior banner if loading a page from the same/current vertical
+                var loc = window.location.pathname;
+                var referrer = document.referrer.replace(/^.*\/\/[^\/]+/, '');
+
+                var currentDir = loc.substring(0, loc.lastIndexOf('/'));
+                var referrerDir = referrer.substring(0, referrer.lastIndexOf('/'));
+
+                if ($('#uber').hasClass('interior')) {
+                    headerHeight = $("header").height() + 5; // Get fixed header height
+                    var offsetTop = $('#pageHeading').offset().top - headerHeight;
+
+                    $('html, body').animate({
+                        scrollTop: offsetTop
+                    }, 1000);
+                }
+            }
+
+        }
+    });
+
+    // Set Tab focus to appear below sticky header
+    $('body').on('keyup', 'a', function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 9 && $('a:focus').length && !$(e.currentTarget).closest("#stickyHeader").length) {
+            headerHeight = $("header").height() + 60; // Get fixed header height
+            var ele = $(e.currentTarget).offset().top;
+            var eleTop = ele - $(window).scrollTop();
+            var newPos = ele - headerHeight;
+
+            if (eleTop < headerHeight) {
+                $('html, body').stop().animate({
+                    scrollTop: newPos
+                }, 500);
+            }
+        }
+    });
+
+
+    /*==========================================================
+        HOMEPAGE BANNER / VIDEO
+    ==========================================================*/
+
+    $(".pauseButton").click(function() {
+        var vid = $("#backgroundVideo")[0];
+        if (!vid.paused) {
+            vid.pause();
+            $(".pauseButton").addClass("paused");
+        } else {
+            vid.play();
+            $(".pauseButton").removeClass("paused");
+        }
+    });
+
+    $("#bannerWrapper .videoControls").detach().prependTo(".bannerRight");
+
+     $(".toggleSound").click(function () {
+         var vid = $("#backgroundVideo")[0];
+         if (!vid.muted) {
+             vid.muted = true;
+             $(".toggleSound").removeClass("sound");
+         }
+         else {
+             vid.muted = false;
+             $(".toggleSound").addClass("sound");
+         }
+     });
+
+
+    /*==========================================================
+        SEARCH MDOAL
+    ==========================================================*/
+
+    $("[data-modal-id]").click(function(event){
+        event.preventDefault();
+        var modalBox = $(this).attr("data-modal-id");
+        $("#" + modalBox).fadeIn();
+        $(".modal-cover").fadeIn("fast");
+        // $(".close").focus();
+
+        var inputs = $('#' + modalBox).find('select, input, textarea, button, a').filter(':visible');
+        var modalFirstInput = inputs.first();
+        var modalLastInput = inputs.last();
+
+        /*set focus on first input*/
+        inputs.eq(1).focus();
+
+        /*redirect last tab to first input*/
+        modalLastInput.on('keydown', function (e) {
+            if ((e.which === 9 && !e.shiftKey)) {
+                e.preventDefault();
+                modalFirstInput.focus();
+            }
+        });
+
+        /*redirect first shift+tab to last input*/
+        modalFirstInput.on('keydown', function (e) {
+            if ((e.which === 9 && e.shiftKey)) {
+                e.preventDefault();
+                modalLastInput.focus();
+            }
+        });
+
+        // var scrollPos = $(window).scrollTop() + 135;
+        // $(".modal-box").css("top", scrollPos + "px");
+
+        $("#searchPopup .gsc-input").focus();
+    });
+
+    function modalSearchClose() {
+        $(".modal-box").fadeOut("fast").next(".modal-cover").fadeOut();
+        $("#searchIconContainer > a").focus();
+    }
+
+    $('#searchPopup .close').click(function() {
+        modalSearchClose();
+    });
+
+    /*==========================================================
+        I'D LIKE TO MODAL
+    ==========================================================*/
+
+    // Modal init
+    $("[data-modal-id='idLikeToModal']").click(function (event) {
+
+        event.preventDefault();
+
+        var modalBox = $(this).attr("data-modal-id");
+        $("#" + modalBox).fadeIn();
+        $(".modal-cover").fadeIn("fast");
+
+        var scrollPos = $(window).scrollTop() + 135;
+        $(".modal-box").css("top", scrollPos + "px");
+
+        $("#" + modalBox + " .close").focus();
+        return false;
+
+    });
+
+    // I'd Like to Modal
+    $(document).keydown(function (event) {
+        if (event.keyCode == 27 && $("#idLikeToModal").is(":visible")) { // Esc
+            closeIdLikeToModal();
+        }
+        if ($("#idLikeToModal").find(".close").is(":focus")) {
+            if (event.shiftKey && event.keyCode == 9) {
+                closeIdLikeToModal();
+            }
+        }
+    });
+
+    $("#idLikeToModal .close").click(function () {
+        closeIdLikeToModal();
+        return false;
+    });
+
+    // Close I'd Like To Modal
+    function closeIdLikeToModal() {
+        $("#idLikeToModal").fadeOut("fast");
+        $(".modal-cover").fadeOut();
+        $("#likeToBtn a").focus();
+    }
+
+    // Close on tab out
+    $("#idLikeToModal").bind("keydown", function (e) {
+        if (e.keyCode === 9) {  // tab
+            setTimeout(function () { // Set quick time delay to allow for next element to focus in before evaluating
+
+                // If current focused element is outside of flyout, close it
+                if ($(document.activeElement).parents("#idLikeToModal").length !== 1) {
+                    closeIdLikeToModal();
+                }
+            }, 50);
+        }
+    });
+
+    // Focus on the proper next element after closing
+    $("#idLikeToModal .searchButton").focusout(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $("#likeToBtn a").focus();
+    });
+
+    /*==========================================================
+        QUICK LINKS FOR HOMEPAGE
+    ==========================================================*/
+
+    $(document).on("mouseover", ".quickLinks:not(.open) .quickLinksInner", function() {
+        openQuicklinks();
+    });
+
+    $(document).on("mouseleave", ".quickLinks.open", function() {
+        closeQuicklinks();
+    });
+
+    $(".quickLinksInner").focus(function(e) {
+      openQuicklinks();
+    });
+
+    $(document).keydown(function(event) {
+      //tab: 9
+        if ($(".quickLinksInner").is(":focus")) {
+        if (event.shiftKey && event.keyCode == 9) {
+          closeQuicklinks();
+        }
+      }
+
+        if ($(".quickLinks .dropdownInner a:last-child").is(":focus")) {
+        if (event.keyCode == 9) {
+          closeQuicklinks();
+        }
+      }
+    });
+
+    function openQuicklinks(){
+        $(".quickLinks .dropdown").stop().show();
+        $(".quickLinks").addClass("open");
+    }
+    
+    function closeQuicklinks(){
+        $(".quickLinks .dropdown").stop().hide();
+        $(".quickLinks").removeClass("open");
+    }
+
+    /*==========================================================
+        RESPONSIVE IFRAME
+    ==========================================================*/
+
+    if ((typeof iCreateObject != "undefined") && (!iCreateObject.isSiteInICreateMode || iCreateObject.isSiteInPreview)) {
+        if ($('iframe').length > 0) {
+            $('iframe').each(function(index) {
+                var patternVideo = /(youtube\.com|youtu\.be|vimeo\.com)/,
+                video = patternVideo.test($(this).attr('src'));
+                var patternIssuu = /(issuu\.com)/,
+                issuu = patternIssuu.test($(this).attr('src'));
+                if (video) {
+                    var iframeWidth = $(this).outerWidth(),
+                    iframeHeight = $(this).outerHeight(),
+                    iframePadding = iframeHeight / iframeWidth * 100;
+                    if ($(this).parent('.iframe-container').length == 0) {
+                        $(this).wrap('<div class="iframe-container" />');
+                    }
+
+                    $(this).parent('.iframe-container').css('padding-bottom', iframePadding + '%');
+                    if ($(this).attr('width')) {
+                        if (!$(this).attr('width').match('%$')) {
+                            $(this).parent('.iframe-container').wrap('<div class="iframe-container-wrapper" style="max-width:' + $(this).attr('width') + 'px"></div>');
+                        }
+                    }
+                } else if (issuu) {
+                    var iframeWidth = $(this).outerWidth(),
+                    iframeHeight = $(this).outerHeight(),
+                    iframePadding = iframeHeight / iframeWidth * 100;
+                    $(this).parent('.issuuembed').addClass('iframe-container').css('padding-bottom', iframePadding + '%');
+                }
+            });
+        }
+    }
+});
+
+
+/*==========================================================
+    BROWSER DETECTION SCRIPT
+==========================================================*/
+
+(function(factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(['jquery'], function($) {
+            return factory($);
+        });
+    } else if (typeof module === 'object' && typeof module.exports === 'object') {
+        module.exports = factory(require('jquery'));
+    } else {
+        factory(window.jQuery);
+    }
+}(function(jQuery) {
+    "use strict";
+
+    function uaMatch(ua) {
+        if (ua === undefined) {
+            ua = window.navigator.userAgent;
+        }
+        ua = ua.toLowerCase();
+
+        var match = /(edge)\/([\w.]+)/.exec(ua) || /(opr)[\/]([\w.]+)/.exec(ua) || /(chrome)[ \/]([\w.]+)/.exec(ua) || /(iemobile)[\/]([\w.]+)/.exec(ua) || /(webkit)[ \/]([\w.]+).*(version)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec(ua) || /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) || ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || [];
+
+        var platform_match = /(ipad)/.exec(ua) || /(ipod)/.exec(ua) || /(windows phone)/.exec(ua) || /(iphone)/.exec(ua) || /(kindle)/.exec(ua) || /(silk)/.exec(ua) || /(android)/.exec(ua) || /(win)/.exec(ua) || /(mac)/.exec(ua) || /(linux)/.exec(ua) || /(cros)/.exec(ua) || /(playbook)/.exec(ua) || /(bb)/.exec(ua) || /(blackberry)/.exec(ua) || [];
+
+        var browser = {},
+            matched = {
+                browser: match[5] || match[3] || match[1] || "",
+                version: match[2] || match[4] || "0",
+                versionNumber: match[4] || match[2] || "0",
+                platform: platform_match[0] || ""
+            };
+
+        if (matched.browser) {
+            browser[matched.browser] = true;
+            browser.version = matched.version;
+            browser.versionNumber = parseInt(matched.versionNumber, 10);
+        }
+
+        if (matched.platform) {
+            browser[matched.platform] = true;
+        }
+
+        if (browser.android || browser.bb || browser.blackberry || browser.ipad || browser.iphone || browser.ipod || browser.kindle || browser.playbook || browser.silk || browser["windows phone"]) {
+            browser.mobile = true;
+        }
+
+        if (browser.cros || browser.mac || browser.linux || browser.win) {
+            browser.desktop = true;
+        }
+
+        if (browser.chrome || browser.opr || browser.safari) {
+            browser.webkit = true;
+        }
+
+        if (browser.rv || browser.iemobile) {
+            var ie = "msie";
+            matched.browser = ie;
+            browser[ie] = true;
+        }
+
+        if (browser.edge) {
+            delete browser.edge;
+            var msedge = "msedge";
+            matched.browser = msedge;
+            browser[msedge] = true;
+        }
+
+        if (browser.safari && browser.blackberry) {
+            var blackberry = "blackberry";
+            matched.browser = blackberry;
+            browser[blackberry] = true;
+        }
+
+        if (browser.safari && browser.playbook) {
+            var playbook = "playbook";
+            matched.browser = playbook;
+            browser[playbook] = true;
+        }
+
+        if (browser.bb) {
+            var bb = "blackberry";
+            matched.browser = bb;
+            browser[bb] = true;
+        }
+
+        if (browser.opr) {
+            var opera = "opera";
+            matched.browser = opera;
+            browser[opera] = true;
+        }
+
+        if (browser.safari && browser.android) {
+            var android = "android";
+            matched.browser = android;
+            browser[android] = true;
+        }
+
+        if (browser.safari && browser.kindle) {
+            var kindle = "kindle";
+            matched.browser = kindle;
+            browser[kindle] = true;
+        }
+
+        if (browser.safari && browser.silk) {
+            var silk = "silk";
+            matched.browser = silk;
+            browser[silk] = true;
+        }
+
+        browser.name = matched.browser;
+        browser.platform = matched.platform;
+        return browser;
+    }
+
+    window.jQBrowser = uaMatch(window.navigator.userAgent);
+    window.jQBrowser.uaMatch = uaMatch;
+
+    if (jQuery) {
+        jQuery.browser = window.jQBrowser;
+    }
+
+    return window.jQBrowser;
+}));
+
+$(function() {
+    if ($.browser.name == 'msie') {
+        $('html').addClass('ie');
+    }
+    if ($.browser.name == 'msedge') {
+        $('html').addClass('msedge');
+    }
+    if ($.browser.name == 'opera') {
+        $('html').addClass('opera');
+    }
+    if ($.browser.name == 'mozilla') {
+        $('html').addClass('moz');
+    }
+    if ($.browser.name == 'safari') {
+        $('html').addClass('safari');
+    }
+    if ($.browser.name == 'chrome') {
+        $('html').addClass('chrome');
+    }
+});
+
+/*==========================================================
+    OBJECT FIT IE
+==========================================================*/
+
+$(function () {
+    if ('objectFit' in document.documentElement.style === false) {
+        $('img[data-object-fit-ie]').each(function () {
+            var objectfitIEData = $(this).attr('data-object-fit-ie');
+            if (objectfitIEData != "") {
+                var objObjectfitIEData = $.parseJSON(objectfitIEData);
+                var objectfit = objObjectfitIEData['object-fit'];
+                var objectposition = objObjectfitIEData['object-position'];
+            } else {
+                var objectfit = $(this).css('object-fit');
+                var objectposition = $(this).css('object-position');
+            }
+            var imgSource = $(this).attr('src');
+            var imgWidth = $(this).get(0).naturalWidth;
+            var imgHeight = $(this).get(0).naturalHeight;
+
+            $(this).css('background-image', 'url(' + imgSource + ')');
+            $(this).css('background-size', objectfit);
+            $(this).css('background-position', objectposition);
+            $(this).css('background-repeat', 'no-repeat');
+            $(this).attr("src", 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'' + imgWidth + '\' height=\'' + imgHeight + '\'%3E%3C/svg%3E');
+        });
+    }
+});
