@@ -1,0 +1,30 @@
+﻿$(function () {
+    var fontSizeInitial = parseInt($('#printArea').css('font-size')),
+        fontSize = fontSizeInitial;
+
+    $('.resizeText').find('a').on('click', function (event) {
+        event.preventDefault();
+        if (iCreateObject.isSiteInICreateMode) {
+            showNAMessage();
+        } else {
+            var sizer = $(this);
+            if (sizer.hasClass('textDefault')) {
+                fontSize = fontSizeInitial;
+                resizeText(fontSize);
+            } else if (sizer.hasClass('textDecrease') && fontSize > 8) {
+                fontSize--;
+                resizeText(fontSize);
+            } else if (sizer.hasClass('textIncrease') && fontSize < 24) {
+                fontSize++;
+                resizeText(fontSize);
+            }
+        }
+    });
+});
+
+function resizeText(size) {
+    $('#printArea, #contentInt .topContent').css('font-size', size);
+    $('#printArea .datatable .titlerow').css('font-size', size);
+    $('.Accordion .AccordionTrigger *').css('font-size', size);
+    $('.Accordion .AccordionContent').css('font-size', size);
+}

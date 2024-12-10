@@ -1,0 +1,271 @@
+﻿/* ============================================================
+                        CONTACTS EXTENDED (DIRECTORY)
+============================================================= */
+
+
+/* =============================
+    PHONE DIRECTORY
+================================ */
+
+.contactListContainer {
+    width: 100%;
+}
+
+.ContactsModulePhoneCategoryHeader {
+    color: #fff;
+    margin-top: 30px;
+    padding: 10px 3px;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.contactList {
+    width: 100%;
+}
+
+.ContactModulePhoneContactContainer {
+    position: relative;
+    padding: 7px 0 7px 20px;
+    border-bottom: solid 1px #ccc;
+}
+
+.ContactModulePhoneBulletContainer {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 8px;
+    left: 0;
+}
+
+.ContactModulePhoneContactDataContainer {
+    width: 70%;
+    float: left;
+}
+
+    .ContactModulePhoneContactDataContainer a {
+        display: block;
+        width: 100%;
+    }
+
+.ContactModulePhoneContactPhoneNumbersContainer {
+    width: 30%;
+    padding-left: 20px;
+    max-width: 300px;
+    float: right;
+    text-align: right;
+}
+
+.additionalItemsRight {
+    width: 100%;
+}
+
+.contactListAddress {
+    margin: 3px 0 10px 0;
+}
+
+.contactListOrganizationDetails {
+    margin: 3px 0 10px 0;
+}
+
+.contactListPhNumber,
+.contactListItemLeft {
+    margin: 3px 0;
+}
+
+
+/* =============================
+        SEARCH
+================================ */
+
+.contactSearchForm legend {
+    width: 100%;
+}
+
+.contactSearchForm table {
+    clear: both;
+    width: 100%;
+    max-width: 500px;
+    border-collapse: collapse;
+    border: none;
+    margin: 20px 0;
+    float: left;
+}
+
+    .contactSearchForm table tr > td {
+        vertical-align: top;
+        padding: 5px 0;
+    }
+
+    .contactSearchForm table .labelCell {
+        width: 100px;
+        padding-right: 15px;
+    }
+
+    .contactSearchForm table input, .contactSearchForm table select {
+        max-width: 500px;
+    }
+
+.contactSearchResults {
+    clear: both;
+    margin-top: 20px;
+}
+
+    .contactSearchResults .headingBackgroundColour {
+        padding: 10px 20px;
+        font-size: 1em;
+        font-weight: bold;
+        color: #fff;
+        display: none;
+    }
+
+        .contactSearchResults .headingBackgroundColour.active {
+            display: block;
+        }
+
+
+    .contactSearchResults > table.contactSearchResultsTable {
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+        float: left;
+    }
+
+    .contactSearchResults > table > tbody > tr > td {
+        width: 50%;
+        padding: 20px;
+        border: solid 1px #ccc;
+        vertical-align: top;
+        border-top: none;
+    }
+
+        .contactSearchResults > table > tbody > tr > td.titlerow {
+            padding: 10px 20px;
+        }
+
+
+@media only screen and (max-width : 991px) {
+    .ContactModulePhoneContactDataContainer {
+        width: 60%;
+        float: left;
+    }
+
+    .ContactModulePhoneContactPhoneNumbersContainer {
+        width: 40%;
+        padding-left: 20px;
+        max-width: 300px;
+        float: right;
+        text-align: right;
+    }
+}
+
+@media only screen and (max-width : 767px) {
+    .ContactModulePhoneContactDataContainer {
+        width: 100%;
+        float: none;
+    }
+
+    .ContactModulePhoneContactPhoneNumbersContainer {
+        width: 100%;
+        padding-left: 0;
+        max-width: none;
+        float: none;
+        text-align: left;
+    }
+
+    .contactSearchForm table tr > td {
+        width: 100% !important;
+        display: block;
+        padding: 0;
+        float: left;
+        clear: both;
+    }
+
+        .contactSearchForm table tr > td:first-child {
+            padding-top: 15px;
+        }
+
+    .contactSearchResults > table.contactSearchResultsTable > tbody > tr > td {
+        width: 100%;
+        display: block;
+        float: left;
+        clear: both;
+    }
+
+        .contactSearchResults > table.contactSearchResultsTable > tbody > tr > td:last-child {
+            background: #f1f1f1;
+        }
+}
+
+@media only screen and (max-width : 480px) {
+
+}
+
+
+
+
+/*fieldset
+{
+    border:solid 1px silver;
+}
+
+fieldset legend span
+{
+    font-weight:bold;
+    padding-right:6px;
+    padding-left:6px;
+    font-size:13px;
+}
+
+.textbox
+{
+    width:200px;
+}
+
+.ContactsModulePhoneCategoryHeader
+{
+    padding:6px; 
+    color:White; 
+    font-weight:bold; 
+    margin-top:10px; 
+    font-size:13px;
+}
+
+.contactSearchTopText p
+{
+    margin:0px;
+    padding:0px;
+}
+
+
+.ContactModulePhoneContactContainer
+{
+    border-Bottom:solid 1px black; 
+    padding:5px 5px 5px 10px;
+}
+
+.ContactModulePhoneBulletContainer
+{
+    float:left; 
+    width:20px;
+	line-height: 16px !important;
+    margin: 0 !important; 
+}
+
+.ContactModulePhoneContactDataContainer
+{
+    float:left; 
+    width:395px;
+}
+
+.ContactModulePhoneContactPhoneNumbersContainer
+{
+    float:left; 
+    text-align:right; 
+    width:200px;
+}
+
+h2.ContactsModulePhoneCategoryHeader
+{
+	color: #fff !important;    
+}
+*/
